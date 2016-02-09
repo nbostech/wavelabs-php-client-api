@@ -1,10 +1,15 @@
 {
   "name": "wavelabs/php-client-api",
   "type": "library",
-  "description": "Logging for PHP 5.3",
-  "keywords": ["logging"],
+  "description": "PHP client to connect Wavelabs API",
+  "keywords": ["wavelabs", "php api"],
   "homepage": "https://github.com/nbostech/wavelabs-php-client-api",
   "license": "MIT",
+  "autoload": {
+		"psr-0": {
+			"Wavelabs": "src/Wavelabs"
+		}
+	},
   "authors": [
     {
       "name": "L B Sastry",
@@ -14,5 +19,6 @@
   ],
   "require": {
     "php": ">=5.4.0"
-  }
+  },
+   "minimum-stability": "dev" 
 }

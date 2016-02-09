@@ -20,10 +20,11 @@ class ApiBase {
 
 
     function __construct(){
+        defined('API_URL')        OR define('API_URL', "http://starterapp.com:8080/starter-app-rest-grails/api/v0/");
+        defined('CLIENT_ID')      OR define('CLIENT_ID', "my-client");
+        defined('CLIENT_SECRET')  OR define('CLIENT_SECRET', "");
         ApiBase::$fields = $_POST + $_GET;
-        if(!defined('API_URL')){
-            die("Please define 'API_URL' constant for connect to API server.");
-        }
+
         if(defined('CLIENT_ID') && defined('CLIENT_SECRET')){
             $this->setClient(CLIENT_ID, CLIENT_SECRET);
         }else if(defined('CLIENT_ID')){

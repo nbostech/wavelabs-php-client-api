@@ -6,10 +6,10 @@
   "homepage": "https://github.com/nbostech/wavelabs-php-client-api",
   "license": "MIT",
   "autoload": {
-		"psr-0": {
-			"Wavelabs": "src/Wavelabs"
-		}
-	},
+	"psr-0": {
+		"Wavelabs": “vendor/wavelabs/php-client-api/src"
+	}
+  },
   "authors": [
     {
       "name": "L B Sastry",

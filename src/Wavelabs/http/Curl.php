@@ -1,23 +1,8 @@
 <?php
 namespace Wavelabs\http;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-/**
- * CodeIgniter Curl Class
- *
- * Work with remote servers via cURL much easier than using the native PHP bindings.
- *
- * @package        	CodeIgniter
- * @subpackage    	Libraries
- * @category    	Libraries
- * @author        	Philip Sturgeon
- * @license         http://philsturgeon.co.uk/code/dbad-license
- * @link			http://philsturgeon.co.uk/code/codeigniter-curl
- */
 class Curl {
 
-	protected $_ci;                 // CodeIgniter instance
 	protected $response = '';       // Contains the cURL response for debug
 	protected $session;             // Contains the cURL handler for a session
 	protected $url;                 // URL of the session
@@ -28,11 +13,10 @@ class Curl {
     public $mime_type = null;
 	public $error_code;             // Error code returned as an int
 	public $error_string;           // Error message returned as a string
-	public $info;                   // Returned after request (elapsed time, etc)
+	public $info = null;                   // Returned after request (elapsed time, etc)
 
 	function __construct($url = '')
 	{
-		$this->_ci = & get_instance();
 		log_message('debug', 'cURL Class Initialized');
 
 		if ( ! $this->is_enabled())
@@ -126,8 +110,11 @@ class Curl {
             if($this->format == "json"){
                 $params = json_encode($params);
             }else{
-                print_r($_POST);
-                //$cfile = curl_file_create('resource/test.png','image/png','testpic');
+                if(!empty($_FILES)){
+                    foreach($_FILES as $fileField => $fileVal){
+                        $params[$fileField] = curl_file_create($fileVal['tmp_name'], $fileVal['type'], $fileVal['name']);
+                    }
+                }
                 //$params = http_build_query($params, NULL, '&');
             }
 		}
@@ -146,7 +133,11 @@ class Curl {
 		// If its an array (instead of a query string) then format it correctly
 		if (is_array($params))
 		{
-			$params = http_build_query($params, NULL, '&');
+            if($this->format == "json"){
+                $params = json_encode($params);
+            }else{
+                //$params = http_build_query($params, NULL, '&');
+            }
 		}
 
 		// Add in the specific options provided
@@ -283,13 +274,6 @@ class Curl {
 	// Start a session from a URL
 	public function create($url)
 	{
-		// If no a protocol in URL, assume its a CI link
-		if ( ! preg_match('!^\w+://! i', $url))
-		{
-			$this->_ci->load->helper('url');
-			$url = site_url($url);
-		}
-
 		$this->url = $url;
 		$this->session = curl_init($this->url);
 
@@ -334,6 +318,7 @@ class Curl {
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
         //echo "<pre>"; print_r($this->info); print_r($this->response); echo "</pre>"; exit;
+
 		// Request failed
 		if ($this->response === FALSE)
 		{

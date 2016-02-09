@@ -9,14 +9,15 @@ class User extends ApiBase{
         parent::__construct();
     }
 
+    function get($member_id){
+        return $this->rest->get("users/".$member_id."/");
+    }
+
     function update($userData){
         return $this->rest->put("users/".$userData['id']."/", $userData);
     }
 
-    function updateProfileImage($file_field_name, $profileData){
-        if(!empty($_FILES[$file_field_name])){
-            $profileData["file"] = '@' . $_FILES[$file_field_name]['tmp_name'].';filename=' . $_FILES[$file_field_name]['name']. ';type='.$_FILES[$file_field_name]['type'];
-        }
+    function updateProfileImage($profileData){
         return $this->rest->post("media/", $profileData, "form-data");
     }
 

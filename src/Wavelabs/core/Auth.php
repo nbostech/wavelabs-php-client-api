@@ -15,15 +15,16 @@ class Auth extends ApiBase{
     }
 
     function login($username, $password){
-        $response = $this->rest->post("auth/login/", [
+        $this->last_response = $this->rest->post("auth/login/", [
             "clientId" => $this->clientId,
             "username" => $username,
             "password" => $password
         ]);
-        if(!empty($response->token)){
-            $this->setToken($response->token);
+        $this->http_code = $this->rest->getLastHttpCode();
+        if(!empty($this->last_response->token)){
+            $this->setToken($this->last_response->token);
         }
-        return $response;
+        return $this->last_response;
     }
 
     function changePassword($password, $newPassword){

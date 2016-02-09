@@ -4,33 +4,14 @@ namespace Wavelabs\http;
 use Wavelabs\http\Curl;
 use Wavelabs;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
-/**
- * CodeIgniter REST Class
- *
- * Mske REST requests to RESTful services with simple syntax.
- *
- * @package        	CodeIgniter
- * @subpackage    	Libraries
- * @category    	Libraries
- * @author        	Philip Sturgeon
- * @created			04/06/2009
- * @license         http://philsturgeon.co.uk/code/dbad-license
- * @link			http://getsparks.org/packages/restclient/show
- */
-
-
-
 class Rest
 {
-    protected $_ci;
     protected $curl = null;
 
     protected $supported_formats = array(
 		'xml' 				=> 'application/xml',
 		'json' 				=> 'application/json',
 		'serialize' 		=> 'application/vnd.php.serialized',
-        'form-data'         => 'multipart/form-data',
 		'php' 				=> 'text/plain',
     	'csv'				=> 'text/csv'
 	);
@@ -54,13 +35,19 @@ class Rest
 	protected $http_pass = null;
 
     protected $response_string;
+    private $last_http_code = null;
+    private $last_response = null;
+
+    const HTTP_OK = 200;
+    const HTTP_BAD_REQUEST = 400;
+    const HTTP_FORBIDDEN = 403;
+    const HTTP_NOT_FOUND = 404;
+    const HTTP_METHOD_NOT_ALLOWED = 405;
+    const HTTP_INTERNAL_SERVER_ERROR = 500;
 
     function __construct($config = array())
     {
-        $this->_ci =& get_instance();
         log_message('debug', 'REST Class Initialized');
-
-		//$this->_ci->load->library('curl');
         $this->curl = new Curl();
 
 		// If a URL was passed to the library
@@ -69,7 +56,6 @@ class Rest
 
 	function __destruct()
 	{
-		//$this->_ci->curl->set_defaults();
         $this->curl->set_defaults();
 	}
 
@@ -105,7 +91,7 @@ class Rest
     }
 
 
-    public function put($uri, $params = array(), $format = NULL)
+    public function put($uri, $params = array(), $format = 'json')
     {
         return $this->_call('put', $uri, $params, $format);
     }
@@ -161,7 +147,10 @@ class Rest
         // Format
         $response = $this->_format_response($response);
 
-        return $this->validateResponse($response);
+        $this->last_http_code = isset($this->curl->last_info['http_code'])?$this->curl->last_info['http_code']:"";
+        $this->last_response = $this->validateResponse($response);;
+
+        return $this->last_response;
     }
 
 
@@ -242,7 +231,7 @@ class Rest
 	protected function _set_headers()
 	{
 		//$this->curl->http_header('Accept: '.$this->mime_type);
-        if(!empty($this->mime_type)){
+        if(!empty($this->mime_type) && in_array($this->mime_type, $this->supported_formats) ){
             $this->curl->http_header('Content-Type: '.$this->mime_type);
         }else{
             $this->curl->http_header('Content-Type: multipart/form-data');
@@ -331,18 +320,24 @@ class Rest
     }
 
     public function validateResponse($response){
+        Wavelabs\core\ApiBase::$error = null;
+        Wavelabs\core\ApiBase::$message = null;
         if(isset($response->errors)){
-            //$_SESSION['errors'] = $response->errors;
-            Wavelabs::setErrors($response->errors);
+            Wavelabs\core\ApiBase::setErrors($response->errors);
         }else if(isset($response->error_description)){
-            setError($response->error_description);
+            Wavelabs\core\ApiBase::setError($response->error_description);
         }else if(isset($response->message)){
-            setMessage($response->message);
+            Wavelabs\core\ApiBase::setMessage($response->message);
         }
         return $response;
     }
 
-}
+    public function getLastHttpCode(){
+        return $this->last_http_code;
+    }
 
-/* End of file REST.php */
-/* Location: ./application/libraries/REST.php */
+    public function getLastResponse(){
+        return $this->last_response;
+    }
+
+}

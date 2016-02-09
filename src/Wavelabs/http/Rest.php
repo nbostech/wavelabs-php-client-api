@@ -47,7 +47,6 @@ class Rest
 
     function __construct($config = array())
     {
-        log_message('debug', 'REST Class Initialized');
         $this->curl = new Curl();
 
 		// If a URL was passed to the library

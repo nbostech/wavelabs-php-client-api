@@ -7,7 +7,7 @@
   "license": "MIT",
   "autoload": {
 		"psr-0": {
-			"wavelabs\\php-client-api": "src/"
+			"Wavelabs": "src/Wavelabs"
 		}
 	},
   "authors": [

@@ -65,9 +65,9 @@ You're ready to connect with wavelabs-php-client-api!
  if($http_code == 200){
      // message from server
      echo "Token :".$response->token->access_token;
-     echo "<br/>Member ID :".$response->member->id;
-     echo "<br/>Email :".$response->member->email;
-     echo "<br/>First Name :".$response->member->firstName;
+     echo "Member ID :".$response->member->id;
+     echo "Email :".$response->member->email;
+     echo "First Name :".$response->member->firstName;
  }else {
      //get Errors
      print_r(\Wavelabs\core\ApiBase::getErrors());

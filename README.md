@@ -13,19 +13,19 @@ You can install wavelabs-php-client-api via composer
  wavelabs-php-client-api is available on packagist as the "wavelabs/php-client-api" package
  
  On your project root, install Composer
-```
-  curl -sS https://getcomposer.org/installer | php
-```
+ ```php
+   curl -sS https://getcomposer.org/installer | php
+ ```
 Configure the wavelabs-php-client-api dependency in your 'composer.json' file:
-```
-"require": {
-    "wavelabs/php-client-api": "*"
-}
-```
+ ```json
+ "require": {
+     "wavelabs/php-client-api": "*"
+ }
+ ```
 On your project root, install the the wavelabs-php-client-api with its dependencies:
-```
-php composer.phar install
-```
+ ```php
+ php composer.phar install
+ ```
 You're ready to connect with wavelabs-php-client-api!
  
 ## Via github
@@ -35,64 +35,64 @@ You're ready to connect with wavelabs-php-client-api!
 # Getting Started
 
  Include the wavelabs-php-client-api via composer autoloder 
-```
-inclide 'vendor/autoload.php';
-```
+ ```php
+ inclide 'vendor/autoload.php';
+ ```
  Or Include the wavelabs-php-client-api when downloaded from github 
-```
-include 'wavelabs-php-client-api-master/src/Wavelabs/Autoloader.php';
-```
+ ```php
+ include 'wavelabs-php-client-api-master/src/Wavelabs/Autoloader.php';
+ ```
 
 ##Samples
 
-1. User Registration 
-```
-// Include autoloader
-require "vendor/autoload.php";
+1.  **User Registration** 
+ ```php
+ // Include autoloader
+ require "vendor/autoload.php";
+ 
+ // calling login service
+ $response = $auth->signup([
+     "username" => "demouser",
+     "password" => "demopass",
+     "email" => "demo@gmail.com",
+     "firstName" => "first name",
+     "lastName" => "last name"
+ ]);
+ // get service HTTP status code
+ $http_code = $auth->getLastHttpCode();
+ 
+ // if HTTP status is OK
+ if($http_code == 200){
+     // message from server
+     echo "Token :".$response->token->access_token;
+     echo "<br/>Member ID :".$response->member->id;
+     echo "<br/>Email :".$response->member->email;
+     echo "<br/>First Name :".$response->member->firstName;
+ }else {
+     //get Errors
+     print_r(\Wavelabs\core\ApiBase::getErrors());
+ }
+ ```
 
-// calling login service
-$response = $auth->signup([
-    "username" => "demouser",
-    "password" => "demopass",
-    "email" => "demo@gmail.com",
-    "firstName" => "first name",
-    "lastName" => "last name"
-]);
-// get service HTTP status code
-$http_code = $auth->getLastHttpCode();
-
-// if HTTP status is OK
-if($http_code == 200){
-    // message from server
-    echo "Token :".$response->token->access_token;
-    echo "<br/>Member ID :".$response->member->id;
-    echo "<br/>Email :".$response->member->email;
-    echo "<br/>First Name :".$response->member->firstName;
-}else {
-    //get Errors
-    print_r(\Wavelabs\core\ApiBase::getErrors());
-}
-```
-
-2. User Login 
-```
-// Include autoloader
-require "vendor/autoload.php";
-
-$auth = new Wavelabs\core\Auth();
-
-// calling login service
-$response = $auth->login("sastrylal", "Admin@123");
-// get service HTTP status code
-$http_code = $auth->getLastHttpCode();
-
-// if HTTP status is OK
-if($http_code == 200){
-    echo "Welcome to ". $response->member->firstName;
-}else {
-    //get Errors 
-    print_r(\Wavelabs\core\ApiBase::getErrors());
-}
-```
+2.  **User Login**
+ ```php
+ // Include autoloader
+ require "vendor/autoload.php";
+ 
+ $auth = new Wavelabs\core\Auth();
+ 
+ // calling login service
+ $response = $auth->login("sastrylal", "Admin@123");
+ // get service HTTP status code
+ $http_code = $auth->getLastHttpCode();
+ 
+ // if HTTP status is OK
+ if($http_code == 200){
+     echo "Welcome to ". $response->member->firstName;
+ }else {
+     //get Errors 
+     print_r(\Wavelabs\core\ApiBase::getErrors());
+ }
+ ```
 
 

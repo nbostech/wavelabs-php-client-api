@@ -11,7 +11,9 @@ class Auth extends ApiBase{
 
     function signup($userData){
         $userData['clientId'] = $this->clientId;
-        return $this->rest->post("users/signup/", $userData);
+        $this->last_response = $this->rest->post("users/signup/", $userData);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function login($username, $password){
@@ -20,7 +22,7 @@ class Auth extends ApiBase{
             "username" => $username,
             "password" => $password
         ]);
-        $this->http_code = $this->rest->getLastHttpCode();
+        $this->last_http_code = $this->rest->getLastHttpCode();
         if(!empty($this->last_response->token)){
             $this->setToken($this->last_response->token);
         }
@@ -29,26 +31,34 @@ class Auth extends ApiBase{
 
     function changePassword($password, $newPassword){
         $this->rest->api_key($this->token->token_type." ".$this->token->access_token, "Authorization");
-        return $this->rest->post("auth/changePassword/", [
+        $this->last_response = $this->rest->post("auth/changePassword/", [
             "password" => $password,
             "newPassword" => $newPassword
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function forgotPassword($email){
-        return $this->rest->post("auth/forgotPassword/", [
+        $this->last_response = $this->rest->post("auth/forgotPassword/", [
             "email" => $email
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function resetPassword($resetToken){
-        return $this->rest->post("auth/resetPassword/", [
+        $this->last_response = $this->rest->post("auth/resetPassword/", [
 
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function logout(){
         $this->resetToken();
-        return $this->rest->get("auth/logout/");
+        $this->last_response = $this->rest->get("auth/logout/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 }

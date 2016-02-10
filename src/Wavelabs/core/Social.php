@@ -10,27 +10,35 @@ class Social extends ApiBase{
     }
 
     function facebookConnect($accessToken){
-        return $this->rest->post("auth/social/facebook/connect/", [
+        $this->last_response = $this->rest->post("auth/social/facebook/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function googleConnect($accessToken){
-        return $this->rest->post("auth/social/googlePlus/connect/", [
+        $this->last_response = $this->rest->post("auth/social/googlePlus/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function twitterConnect($accessToken){
-        return $this->rest->post("auth/social/twitter/connect/", [
+        $this->last_response = $this->rest->post("auth/social/twitter/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 
     function facebookLogin(){
-        return $this->rest->get("auth/social/facebook/login/");
+        $this->last_response = $this->rest->get("auth/social/facebook/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
     }
 }

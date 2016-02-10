@@ -147,7 +147,7 @@ class Rest
         $response = $this->_format_response($response);
 
         $this->last_http_code = isset($this->curl->last_info['http_code'])?$this->curl->last_info['http_code']:"";
-        $this->last_response = $this->validateResponse($response);;
+        $this->last_response = $this->validateResponse($response);
 
         return $this->last_response;
     }

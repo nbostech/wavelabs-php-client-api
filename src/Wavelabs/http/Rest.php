@@ -37,6 +37,7 @@ class Rest
     protected $response_string;
     private $last_http_code = null;
     private $last_response = null;
+	protected $http_headers = [];
 
     const HTTP_OK = 200;
     const HTTP_BAD_REQUEST = 400;
@@ -169,7 +170,7 @@ class Rest
 		return $this;
 	}
 
-	public function debug()
+	/*public function debug()
 	{
 		$request = $this->curl->debug_request();
 
@@ -206,7 +207,7 @@ class Rest
 		print_r($this->curl->info);
 		echo "</pre>";
 
-	}
+	}*/
 
 
 	// Return HTTP status code
@@ -235,6 +236,11 @@ class Rest
         }else{
             $this->curl->http_header('Content-Type: multipart/form-data');
         }
+		if(!empty($this->http_headers)){
+			foreach($this->http_headers as $key => $val){
+				$this->curl->http_header($key.': '.$val);
+			}
+		}
 	}
 
 	protected function _format_response($response)
@@ -326,7 +332,11 @@ class Rest
         }else if(isset($response->error_description)){
             Wavelabs\core\ApiBase::setError($response->error_description);
         }else if(isset($response->message)){
-            Wavelabs\core\ApiBase::setMessage($response->message);
+			if($this->last_http_code == 200){
+				Wavelabs\core\ApiBase::setMessage($response->message);
+			}else{
+				Wavelabs\core\ApiBase::setError($response->message);
+			}
         }
         return $response;
     }
@@ -338,5 +348,9 @@ class Rest
     public function getLastResponse(){
         return $this->last_response;
     }
+
+	public function setHttpHeader($key, $val){
+		$this->http_headers[$key] = $val;
+	}
 
 }

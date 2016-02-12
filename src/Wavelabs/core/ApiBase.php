@@ -35,8 +35,31 @@ class ApiBase {
         ]);
         if(!empty($_SESSION['api_token'])){
             $this->token = $_SESSION['api_token'];
-            $this->rest->api_key($this->token->token_type." ".$this->token->access_token, "Authorization");
+            //$this->rest->api_key($this->token->token_type." ".$this->token->access_token, "Authorization");
+            $this->rest->setHttpHeader("Authorization", $this->token->token_type." ".$this->token->access_token);
         }
+    }
+
+    function apiCall($method, $url, $parems = null, $format = "json"){
+        if(method_exists($this->rest, $method)){
+            $this->last_response = $this->rest->{$method}($url, $parems, $format);
+            $this->last_http_code = $this->rest->getLastHttpCode();
+            /*self::$error = null;
+            self::$message = null;
+            if(isset($this->last_response->errors)){
+                self::setErrors($this->last_response->errors);
+            }else if(isset($this->last_response->error_description)){
+                self::setError($this->last_response->error_description);
+            }else if(isset($this->last_response->message)){
+                if($this->last_http_code == 200){
+                    self::setMessage($this->last_response->message);
+                }else{
+                    self::setError($this->last_response->message);
+                }
+            }*/
+            return $this->last_response;
+        }
+        return false;
     }
 
     function getLastResponse(){
@@ -55,6 +78,10 @@ class ApiBase {
     function setToken($token){
         $_SESSION['api_token'] = $token;
         $this->token = $token;
+    }
+
+    function getToken(){
+        return $this->token;
     }
 
     function resetToken(){

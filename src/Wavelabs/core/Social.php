@@ -45,14 +45,41 @@ class Social extends ApiBase{
         return $this->last_response;
     }
 
+    function gitHubConnect($accessToken){
+        $this->last_response = $this->rest->post("auth/social/gitHub/connect/", [
+            "clientId" => $this->clientId,
+            "accessToken" => $accessToken
+        ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
     function facebookLogin(){
         $this->last_response = $this->rest->get("auth/social/facebook/login/");
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }
 
+    function googleLogin(){
+        $this->last_response = $this->rest->get("auth/social/googlePlus/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
+    function twitterLogin(){
+        $this->last_response = $this->rest->get("auth/social/twitter/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
     function instagramLogin(){
         $this->last_response = $this->rest->get("auth/social/instagram/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
+    function gitHubLogin(){
+        $this->last_response = $this->rest->get("auth/social/gitHub/login/");
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }

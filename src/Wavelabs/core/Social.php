@@ -36,8 +36,23 @@ class Social extends ApiBase{
         return $this->last_response;
     }
 
+    function instagramConnect($accessToken){
+        $this->last_response = $this->rest->post("auth/social/instagram/connect/", [
+            "clientId" => $this->clientId,
+            "accessToken" => $accessToken
+        ]);
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
     function facebookLogin(){
         $this->last_response = $this->rest->get("auth/social/facebook/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
+    function instagramLogin(){
+        $this->last_response = $this->rest->get("auth/social/instagram/login/");
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }

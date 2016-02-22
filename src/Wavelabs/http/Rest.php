@@ -127,7 +127,7 @@ class Rest
 		$this->_set_headers();
 
         // Initialize cURL session
-        $this->curl->create($this->rest_server.$uri);
+        $this->curl->create($uri);
 
         // If authentication is enabled use it
         if ($this->http_auth != '' && $this->http_user != '')
@@ -170,46 +170,6 @@ class Rest
 		return $this;
 	}
 
-	/*public function debug()
-	{
-		$request = $this->curl->debug_request();
-
-		echo "=============================================<br/>\n";
-		echo "<h2>REST Test</h2>\n";
-		echo "=============================================<br/>\n";
-		echo "<h3>Request</h3>\n";
-		echo $request['url']."<br/>\n";
-		echo "=============================================<br/>\n";
-		echo "<h3>Response</h3>\n";
-
-		if ($this->response_string)
-		{
-			echo "<code>".nl2br(htmlentities($this->response_string))."</code><br/>\n\n";
-		}
-
-		else
-		{
-			echo "No response<br/>\n\n";
-		}
-
-		echo "=============================================<br/>\n";
-
-		if ($this->curl->error_string)
-		{
-			echo "<h3>Errors</h3>";
-			echo "<strong>Code:</strong> ".$this->curl->error_code."<br/>\n";
-			echo "<strong>Message:</strong> ".$this->curl->error_string."<br/>\n";
-			echo "=============================================<br/>\n";
-		}
-
-		echo "<h3>Call details</h3>";
-		echo "<pre>";
-		print_r($this->curl->info);
-		echo "</pre>";
-
-	}*/
-
-
 	// Return HTTP status code
 	public function status()
 	{
@@ -233,9 +193,15 @@ class Rest
 		//$this->curl->http_header('Accept: '.$this->mime_type);
         if(!empty($this->mime_type) && in_array($this->mime_type, $this->supported_formats) ){
             $this->curl->http_header('Content-Type: '.$this->mime_type);
+        }else if(!empty($this->mime_type) && $this->mime_type == "x-www-form-urlencoded"){
+			$this->mime_type = "json";
+			$this->format = "json";
+            $this->curl->http_header('Content-Type: application/x-www-form-urlencoded');
         }else{
-            $this->curl->http_header('Content-Type: multipart/form-data');
-        }
+			$this->mime_type = "json";
+			$this->format = "json";
+			$this->curl->http_header('Content-Type: multipart/form-data');
+		}
 		if(!empty($this->http_headers)){
 			foreach($this->http_headers as $key => $val){
 				$this->curl->http_header($key.': '.$val);
@@ -246,13 +212,12 @@ class Rest
 	protected function _format_response($response)
 	{
 		$this->response_string =& $response;
-
 		// It is a supported format, so just run its formatting method
 		if (array_key_exists($this->format, $this->supported_formats))
 		{
 			return $this->{"_".$this->format}($response);
 		}
-
+		exit;
 		// Find out what format the data was returned in
 		$returned_mime = @$this->curl->info['content_type'];
 

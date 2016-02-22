@@ -13,11 +13,16 @@ class Curl {
     public $mime_type = null;
 	public $error_code;             // Error code returned as an int
 	public $error_string;           // Error message returned as a string
-	public $info = null;                   // Returned after request (elapsed time, etc)
+	public $info = null;            // Returned after request (elapsed time, etc)
+	private $log = null;
 
 	function __construct($url = '')
 	{
 		$url AND $this->create($url);
+		if(defined('CURL_DEBUG') && CURL_DEBUG === true && class_exists('\Monolog\Logger')){
+			$this->log = new \Monolog\Logger('client_request');
+			$this->log->pushHandler(new \Monolog\Handler\StreamHandler(dirname(dirname(__FILE__)).'/client_requests.log', Logger::WARNING));
+		}
 	}
 
 	public function __call($method, $arguments)
@@ -107,8 +112,9 @@ class Curl {
                     foreach($_FILES as $fileField => $fileVal){
                         $params[$fileField] = curl_file_create($fileVal['tmp_name'], $fileVal['type'], $fileVal['name']);
                     }
-                }
-                //$params = http_build_query($params, NULL, '&');
+                }else{
+					$params = http_build_query($params, NULL, '&');
+				}
             }
 		}
 
@@ -310,7 +316,10 @@ class Curl {
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
-        //echo "<pre>"; print_r($this->info); print_r($this->response); echo "</pre>"; exit;
+        //echo "<pre>"; print_r($this->info); print_r($this->response); echo "</pre>";
+		if(defined('CURL_DEBUG') && $this->log !== null){
+			$this->log->addInfo($this->info);
+		}
 
 		// Request failed
 		if ($this->response === FALSE)
@@ -342,29 +351,6 @@ class Curl {
 		return function_exists('curl_init');
 	}
 
-	public function debug()
-	{
-		echo "=============================================<br/>\n";
-		echo "<h2>CURL Test</h2>\n";
-		echo "=============================================<br/>\n";
-		echo "<h3>Response</h3>\n";
-		echo "<code>" . nl2br(htmlentities($this->last_response)) . "</code><br/>\n\n";
-
-		if ($this->error_string)
-		{
-			echo "=============================================<br/>\n";
-			echo "<h3>Errors</h3>";
-			echo "<strong>Code:</strong> " . $this->error_code . "<br/>\n";
-			echo "<strong>Message:</strong> " . $this->error_string . "<br/>\n";
-		}
-
-		echo "=============================================<br/>\n";
-		echo "<h3>Info</h3>";
-		echo "<pre>";
-		print_r($this->info);
-		echo "</pre>";
-	}
-
 	public function debug_request()
 	{
 		return array(
@@ -384,5 +370,3 @@ class Curl {
 
 }
 
-/* End of file Curl.php */
-/* Location: ./application/libraries/Curl.php */

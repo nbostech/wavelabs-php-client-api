@@ -3,35 +3,39 @@ namespace Wavelabs\core;
 
 use Wavelabs\core\ApiBase;
 
-class Auth extends ApiBase{
+class Auth extends ApiBase
+{
 
-    function __construct(){
+    function __construct()
+    {
         parent::__construct();
     }
 
-    function signup($userData){
+    function signup($userData)
+    {
+        $this->setClientTokenHeader();
         $userData['clientId'] = $this->clientId;
-        $this->last_response = $this->rest->post("users/signup/", $userData);
-        $this->last_http_code = $this->rest->getLastHttpCode();
-        return $this->last_response;
+        return $this->apiCall("post", API_BASE_URL . "api/v0/users/signup", $userData);
     }
 
-    function login($username, $password){
-        $this->last_response = $this->rest->post("auth/login/", [
+    function login($username, $password)
+    {
+        $this->setClientTokenHeader();
+        $this->last_response = $this->apiCall("post", API_BASE_URL . "api/v0/auth/login/", [
             "clientId" => $this->clientId,
             "username" => $username,
             "password" => $password
         ]);
-        $this->last_http_code = $this->rest->getLastHttpCode();
-        if(!empty($this->last_response->token)){
+        if (!empty($this->last_response->token)) {
             $this->setToken($this->last_response->token);
         }
         return $this->last_response;
     }
 
-    function changePassword($password, $newPassword){
-        $this->rest->api_key($this->token->token_type." ".$this->token->access_token, "Authorization");
-        $this->last_response = $this->rest->post("auth/changePassword/", [
+    function changePassword($password, $newPassword)
+    {
+        $this->rest->api_key($this->token->token_type . " " . $this->token->access_token, "Authorization");
+        $this->last_response = $this->rest->post(API_BASE_URL . "api/v0/auth/changePassword/", [
             "password" => $password,
             "newPassword" => $newPassword
         ]);
@@ -39,26 +43,30 @@ class Auth extends ApiBase{
         return $this->last_response;
     }
 
-    function forgotPassword($email){
-        $this->last_response = $this->rest->post("auth/forgotPassword/", [
+    function forgotPassword($email)
+    {
+        $this->setClientTokenHeader();
+        $this->last_response = $this->rest->post(API_BASE_URL . "api/v0/auth/forgotPassword/", [
             "email" => $email
         ]);
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }
 
-    function resetPassword($resetToken){
-        $this->last_response = $this->rest->post("auth/resetPassword/", [
+    function resetPassword($resetToken)
+    {
+        $this->last_response = $this->rest->post(API_BASE_URL . "api/v0/auth/resetPassword/", [
 
         ]);
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }
 
-    function logout(){
+    function logout()
+    {
+        $response = $this->apiCall("get", API_BASE_URL . "api/v0/auth/logout/");
         $this->resetToken();
-        $this->last_response = $this->rest->get("auth/logout/");
-        $this->last_http_code = $this->rest->getLastHttpCode();
-        return $this->last_response;
+        $this->resetClientToken();
+        return $response;
     }
 }

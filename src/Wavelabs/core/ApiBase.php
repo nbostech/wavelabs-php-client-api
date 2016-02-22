@@ -10,6 +10,7 @@ class ApiBase {
     protected $clientId = null;
     protected $clientSecret = null;
     protected $token = null;
+    protected $clientToken = null;
     protected $member = null;
     protected $last_response = null;
     protected $last_http_code = null;
@@ -20,9 +21,9 @@ class ApiBase {
 
 
     function __construct(){
-        defined('API_URL')        OR define('API_URL', "http://10.9.9.76:8080/starter-app-rest-grails/api/v0/");
+        defined('API_BASE_URL')   OR define('API_BASE_URL', "http://10.9.9.76:8080/starter-app-rest-grails/");
         defined('CLIENT_ID')      OR define('CLIENT_ID', "my-client");
-        defined('CLIENT_SECRET')  OR define('CLIENT_SECRET', "");
+        defined('CLIENT_SECRET')  OR define('CLIENT_SECRET', "my-secret");
         ApiBase::$fields = $_POST + $_GET;
 
         if(defined('CLIENT_ID') && defined('CLIENT_SECRET')){
@@ -30,12 +31,9 @@ class ApiBase {
         }else if(defined('CLIENT_ID')){
             $this->setClient(CLIENT_ID);
         }
-        $this->rest = new Rest([
-            "server" => API_URL
-        ]);
+        $this->rest = new Rest();
         if(!empty($_SESSION['api_token'])){
             $this->token = $_SESSION['api_token'];
-            //$this->rest->api_key($this->token->token_type." ".$this->token->access_token, "Authorization");
             $this->rest->setHttpHeader("Authorization", $this->token->token_type." ".$this->token->access_token);
         }
     }
@@ -44,7 +42,7 @@ class ApiBase {
         if(method_exists($this->rest, $method)){
             $this->last_response = $this->rest->{$method}($url, $parems, $format);
             $this->last_http_code = $this->rest->getLastHttpCode();
-            /*self::$error = null;
+            self::$error = null;
             self::$message = null;
             if(isset($this->last_response->errors)){
                 self::setErrors($this->last_response->errors);
@@ -56,7 +54,8 @@ class ApiBase {
                 }else{
                     self::setError($this->last_response->message);
                 }
-            }*/
+            }
+            self::__construct();
             return $this->last_response;
         }
         return false;
@@ -87,6 +86,44 @@ class ApiBase {
     function resetToken(){
         unset($_SESSION['api_token']);
         $this->token = null;
+    }
+
+    function setClientToken($token){
+        $_SESSION['api_client_token'] = $token;
+        $this->clientToken = $token;
+    }
+
+    function getClientToken($new = false)
+    {
+        if($this->clientToken !== null){
+            return $this->clientToken;
+        }else if(!empty($_SESSION['api_client_token'])){
+            $this->clientToken = $_SESSION['api_client_token'];
+            return $this->clientToken;
+        }else {
+            $this->last_response = $this->apiCall("post", API_BASE_URL . "oauth/token", [
+                "client_id" => "my-client",
+                "client_secret" => "my-secret",
+                "grant_type" => "client_credentials",
+                "scope" => "oauth.client.r"
+            ], "x-www-form-urlencoded");
+            if(!empty($this->last_response->access_token)){
+                $this->setClientToken($this->last_response);
+            }
+        }
+        return $this->clientToken;
+    }
+
+    function resetClientToken(){
+        unset($_SESSION['api_client_token']);
+        $this->clientToken = null;
+    }
+
+    function setClientTokenHeader(){
+        $this->getClientToken();
+        if(isset($this->clientToken->access_token)){
+            $this->rest->setHttpHeader("Authorization", $this->clientToken->token_type." ".$this->clientToken->access_token);
+        }
     }
 
     public static function setErrors($errors = []){

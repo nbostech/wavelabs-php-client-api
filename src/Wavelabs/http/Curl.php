@@ -21,7 +21,15 @@ class Curl {
 		$url AND $this->create($url);
 		if(defined('CURL_DEBUG') && CURL_DEBUG === true && class_exists('\Monolog\Logger')){
 			$this->log = new \Monolog\Logger('client_request');
-			$this->log->pushHandler(new \Monolog\Handler\StreamHandler(dirname(dirname(__FILE__)).'/client_requests.log', Logger::WARNING));
+			$log_file_path = dirname(dirname(__FILE__)).'/logs/'.date("Y-m-d").'api_requests.log';
+			if(!file_exists(dirname(dirname(__FILE__)).'/logs/')){
+				mkdir(dirname(dirname(__FILE__)).'/logs/');
+			}
+			if(!file_exists($log_file_path)){
+				$fp = fopen($log_file_path, 'a');
+				fclose($fp);
+			}
+			$this->log->pushHandler(new \Monolog\Handler\StreamHandler($log_file_path, \Monolog\Logger::INFO));
 		}
 	}
 
@@ -316,9 +324,9 @@ class Curl {
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
-        //echo "<pre>"; print_r($this->info); print_r($this->response); echo "</pre>";
 		if(defined('CURL_DEBUG') && $this->log !== null){
-			$this->log->addInfo($this->info);
+			$this->log->addInfo("Request :".print_r($this->info, true)."\n");
+			$this->log->addInfo("Response :".print_r($this->response, true)."\n");
 		}
 
 		// Request failed

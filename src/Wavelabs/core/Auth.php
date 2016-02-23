@@ -67,6 +67,7 @@ class Auth extends ApiBase
         $response = $this->apiCall("get", API_BASE_URL . "api/v0/auth/logout/");
         $this->resetToken();
         $this->resetClientToken();
+        $_SESSION = [];
         return $response;
     }
 }

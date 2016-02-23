@@ -21,7 +21,7 @@ class ApiBase {
 
 
     function __construct(){
-        defined('API_BASE_URL')   OR define('API_BASE_URL', "http://10.9.9.76:8080/starter-app-rest-grails/");
+        defined('API_BASE_URL')   OR define('API_BASE_URL', "http://111.93.2.105:8080/starter-app-rest-grails/");
         defined('CLIENT_ID')      OR define('CLIENT_ID', "my-client");
         defined('CLIENT_SECRET')  OR define('CLIENT_SECRET', "my-secret");
         ApiBase::$fields = $_POST + $_GET;

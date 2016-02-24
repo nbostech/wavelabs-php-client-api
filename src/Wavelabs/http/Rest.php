@@ -97,7 +97,7 @@ class Rest
     }
 
 
-    public function delete($uri, $params = array(), $format = NULL)
+    public function delete($uri, $params = array(), $format = 'json')
     {
         return $this->_call('delete', $uri, $params, $format);
     }

@@ -134,6 +134,10 @@ class ApiBase {
         }
     }
 
+    public static function setFormErrors($errors = []) {
+        self::setErrors($errors);
+    }
+
     public static function setError($error) {
         self::$error = $error;
     }

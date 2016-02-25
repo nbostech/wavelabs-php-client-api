@@ -13,6 +13,7 @@ class ApiBase {
     protected $clientToken = null;
     protected $member = null;
     protected $last_response = null;
+    protected $last_response_header = null;
     protected $last_http_code = null;
     public static $errors = [];
     public static $fields = [];
@@ -42,6 +43,7 @@ class ApiBase {
         if(method_exists($this->rest, $method)){
             $this->last_response = $this->rest->{$method}($url, $parems, $format);
             $this->last_http_code = $this->rest->getLastHttpCode();
+            $this->last_response_header = $this->rest->getLastResponseHeader();
             self::$error = null;
             self::$message = null;
             if(isset($this->last_response->errors)){
@@ -63,6 +65,16 @@ class ApiBase {
 
     function getLastResponse(){
         return $this->last_response;
+    }
+
+    function getLastResponseHeader($param = null){
+        if(!empty($this->last_response_header['Content-Range']) && is_string($this->last_response_header['Content-Range'])){
+            $this->last_response_header['Content-Range'] = json_decode($this->last_response_header['Content-Range']);
+        }
+        if($param !== null && isset($this->last_response_header[$param])){
+            return $this->last_response_header[$param];
+        }
+        return $this->last_response_header;
     }
 
     function getLastHttpCode(){

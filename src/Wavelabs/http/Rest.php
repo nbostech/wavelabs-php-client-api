@@ -37,6 +37,7 @@ class Rest
     protected $response_string;
     private $last_http_code = null;
     private $last_response = null;
+	private $last_response_header = null;
 	protected $http_headers = [];
 
     const HTTP_OK = 200;
@@ -149,10 +150,23 @@ class Rest
 
         $this->last_http_code = isset($this->curl->last_info['http_code'])?$this->curl->last_info['http_code']:"";
         $this->last_response = $this->validateResponse($response);
+		$this->last_response_header = !empty($this->curl->last_response_header)?$this->decodeHeaderInfo($this->curl->last_response_header):null;
 
         return $this->last_response;
     }
 
+	private function decodeHeaderInfo($header = ""){
+		$header = explode("\r\n", $header);
+		if(!empty($header)){
+			foreach($header as $key => $val){
+				if(strpos($val, ":") !== false){
+					$val = explode(":", $val, 2);
+					$header[$val[0]] = $val[1];
+				}
+			}
+		}
+		return $header;
+	}
 
     // If a type is passed in that is not supported, use it as a mime type
     public function format($format)
@@ -313,6 +327,10 @@ class Rest
     public function getLastResponse(){
         return $this->last_response;
     }
+
+	public function getLastResponseHeader(){
+		return $this->last_response_header;
+	}
 
 	public function setHttpHeader($key, $val){
 		$this->http_headers[$key] = $val;

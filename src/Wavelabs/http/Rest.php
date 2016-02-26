@@ -151,7 +151,9 @@ class Rest
         $this->last_http_code = isset($this->curl->last_info['http_code'])?$this->curl->last_info['http_code']:"";
         $this->last_response = $this->validateResponse($response);
 		$this->last_response_header = !empty($this->curl->last_response_header)?$this->decodeHeaderInfo($this->curl->last_response_header):null;
-
+		if($this->last_response === null){
+			Wavelabs\core\ApiBase::setError("Server not responding!");
+		}
         return $this->last_response;
     }
 

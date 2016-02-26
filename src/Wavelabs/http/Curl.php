@@ -328,17 +328,24 @@ class Curl {
 
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
-		$this->info = curl_getinfo($this->session);
+		if($this->response !== false){
+			$this->info = curl_getinfo($this->session);
+			// Split header and body response
+			//$header_size = curl_getinfo($this->session, CURLINFO_HEADER_SIZE);
+			//$this->response_header = substr($this->response, 0, $header_size);
+			//$this->response = substr($this->response, $header_size);
+			list($this->response_header, $this->response) = explode("\r\n\r\n", $this->response);
 
-		// Split header and body response
-		//$header_size = curl_getinfo($this->session, CURLINFO_HEADER_SIZE);
-		//$this->response_header = substr($this->response, 0, $header_size);
-		//$this->response = substr($this->response, $header_size);
-		list($this->response_header, $this->response) = explode("\r\n\r\n", $this->response);
-
-		if(defined('CURL_DEBUG') && $this->log !== null){
-			$this->log->addInfo("Request :".print_r($this->info, true)."\n");
-			$this->log->addInfo("Response :".print_r($this->response, true)."\n");
+			if(defined('CURL_DEBUG') && $this->log !== null){
+				$this->log->addInfo($this->url, [
+					"Request" => $this->info,
+					"Response" => $this->response
+				]);
+			}
+		}else{
+			if(defined('CURL_DEBUG') && $this->log !== null){
+				$this->log->addError("Server not responding!", ["URL" => $this->url], ["message" => "test"]);
+			}
 		}
 
 		// Request failed

@@ -10,21 +10,21 @@ class User extends ApiBase{
     }
 
     function get($member_id){
-        return $this->apiCall("get", API_BASE_URL . "api/v0/users/".$member_id."/");
+        return $this->apiCall("get", API_HOST_URL . "api/v0/users/".$member_id."/");
     }
 
     function update($userData){
-        $this->last_response = $this->apiCall("put", API_BASE_URL . "api/v0/users/".$userData['id']."/", $userData);
+        $this->last_response = $this->apiCall("put", API_HOST_URL . "api/v0/users/".$userData['id']."/", $userData);
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }
 
     function updateProfileImage($profileData){
-        return $this->apiCall("post", API_BASE_URL . "api/v0/media/", $profileData, "form-data");
+        return $this->apiCall("post", API_HOST_URL . "api/v0/media/", $profileData, "form-data");
     }
 
     function getProfileImage($profile_id, $media_type = "original"){
-        $this->last_response = $this->apiCall("get", API_BASE_URL . "api/v0/media/", [
+        $this->last_response = $this->apiCall("get", API_HOST_URL . "api/v0/media/", [
             "id" => $profile_id,
             "mediafor" => "profile"
         ]);

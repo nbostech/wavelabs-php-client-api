@@ -57,7 +57,7 @@ class ApiBase {
                     self::setError($this->last_response->message);
                 }
             }
-            if($this->last_response == null){
+            if($this->last_response === null){
                 self::setError("Server not responding!");
             }
             self::__construct();

@@ -1,5 +1,5 @@
 <?php
-namespace Wavelabs\http;
+namespace NBOS\http;
 
 class Curl {
 

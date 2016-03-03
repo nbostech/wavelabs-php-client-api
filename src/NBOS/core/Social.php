@@ -1,7 +1,7 @@
 <?php
-namespace Wavelabs\core;
+namespace NBOS\core;
 
-use Wavelabs\core\ApiBase;
+use NBOS\core\ApiBase;
 
 class Social extends ApiBase{
 
@@ -10,7 +10,9 @@ class Social extends ApiBase{
     }
 
     function facebookConnect($accessToken){
-        $this->setClientTokenHeader();
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
         $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/facebook/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
@@ -19,7 +21,9 @@ class Social extends ApiBase{
     }
 
     function googleConnect($accessToken){
-        $this->setClientTokenHeader();
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
         $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/googlePlus/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
@@ -28,7 +32,9 @@ class Social extends ApiBase{
     }
 
     function twitterConnect($accessToken){
-        $this->setClientTokenHeader();
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
         $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/twitter/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
@@ -37,7 +43,9 @@ class Social extends ApiBase{
     }
 
     function instagramConnect($accessToken){
-        $this->setClientTokenHeader();
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
         $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/instagram/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
@@ -46,7 +54,9 @@ class Social extends ApiBase{
     }
 
     function gitHubConnect($accessToken){
-        $this->setClientTokenHeader();
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
         $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/gitHub/connect/", [
             "clientId" => $this->clientId,
             "accessToken" => $accessToken

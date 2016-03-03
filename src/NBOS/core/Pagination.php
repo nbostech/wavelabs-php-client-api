@@ -1,5 +1,5 @@
 <?php
-namespace Wavelabs\core;
+namespace NBOS\core;
 
 class Pagination
 {

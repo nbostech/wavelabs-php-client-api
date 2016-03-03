@@ -1,7 +1,7 @@
 <?php
-namespace Wavelabs\core;
+namespace NBOS\core;
 
-use Wavelabs\http\Rest;
+use NBOS\http\Rest;
 
 class ApiBase {
 
@@ -22,7 +22,7 @@ class ApiBase {
 
 
     function __construct(){
-        defined('API_HOST_URL')   OR define('API_HOST_URL', "http://api.qa1.wavelabs.in/starter-app-rest-grails/");
+        defined('API_HOST_URL')   OR define('API_HOST_URL', "http://api.qa1.wavelabs.in/");
         defined('API_CLIENT_ID')  OR define('API_CLIENT_ID', "my-client");
         defined('API_CLIENT_SECRET')  OR define('API_CLIENT_SECRET', "my-secret");
         ApiBase::$fields = $_POST + $_GET;

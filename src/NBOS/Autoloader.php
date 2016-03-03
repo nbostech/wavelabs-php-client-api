@@ -1,6 +1,6 @@
 <?php
 
-namespace Wavelabs;
+namespace NBOS;
 
 class Autoloader
 {
@@ -29,7 +29,7 @@ class Autoloader
      */
     public function autoload($class)
     {
-        if (0 !== strpos($class, 'Wavelabs')) {
+        if (0 !== strpos($class, 'NBOS')) {
             return;
         }
 

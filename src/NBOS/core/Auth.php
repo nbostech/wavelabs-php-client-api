@@ -1,7 +1,7 @@
 <?php
-namespace Wavelabs\core;
+namespace NBOS\core;
 
-use Wavelabs\core\ApiBase;
+use NBOS\core\ApiBase;
 
 class Auth extends ApiBase
 {

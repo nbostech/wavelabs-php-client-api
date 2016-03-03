@@ -1,8 +1,8 @@
 <?php
-namespace Wavelabs\http;
+namespace NBOS\http;
 
-use Wavelabs\http\Curl;
-use Wavelabs;
+use NBOS\http\Curl;
+use NBOS;
 
 class Rest
 {
@@ -152,7 +152,7 @@ class Rest
         $this->last_response = $this->validateResponse($response);
 		$this->last_response_header = !empty($this->curl->last_response_header)?$this->decodeHeaderInfo($this->curl->last_response_header):null;
 		if($this->last_response === null){
-			Wavelabs\core\ApiBase::setError("Server not responding!");
+			NBOS\core\ApiBase::setError("Server not responding!");
 		}
         return $this->last_response;
     }
@@ -306,17 +306,17 @@ class Rest
     }
 
     public function validateResponse($response){
-        Wavelabs\core\ApiBase::$error = null;
-        Wavelabs\core\ApiBase::$message = null;
+        NBOS\core\ApiBase::$error = null;
+		NBOS\core\ApiBase::$message = null;
         if(isset($response->errors)){
-            Wavelabs\core\ApiBase::setErrors($response->errors);
+			NBOS\core\ApiBase::setErrors($response->errors);
         }else if(isset($response->error_description)){
-            Wavelabs\core\ApiBase::setError($response->error_description);
+			NBOS\core\ApiBase::setError($response->error_description);
         }else if(isset($response->message)){
 			if($this->last_http_code == 200){
-				Wavelabs\core\ApiBase::setMessage($response->message);
+				NBOS\core\ApiBase::setMessage($response->message);
 			}else{
-				Wavelabs\core\ApiBase::setError($response->message);
+				NBOS\core\ApiBase::setError($response->message);
 			}
         }
         return $response;

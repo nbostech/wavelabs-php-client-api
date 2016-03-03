@@ -7,7 +7,7 @@
   "license": "MIT",
   "autoload": {
 	"psr-0": {
-		"Wavelabs": "src"
+		"NBOS": "src"
 	}
   },
   "authors": [

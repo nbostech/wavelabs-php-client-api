@@ -44,8 +44,8 @@ class ApiBase {
             $this->last_response = $this->rest->{$method}($url, $parems, $format);
             $this->last_http_code = $this->rest->getLastHttpCode();
             $this->last_response_header = $this->rest->getLastResponseHeader();
-            self::$error = null;
-            self::$message = null;
+            //self::$error = null;
+            //self::$message = null;
             if(isset($this->last_response->errors)){
                 self::setErrors($this->last_response->errors);
             }else if(isset($this->last_response->error_description)){
@@ -120,7 +120,7 @@ class ApiBase {
                 "client_id" => "my-client",
                 "client_secret" => "my-secret",
                 "grant_type" => "client_credentials",
-                "scope" => "oauth.client.r"
+                "scope" => ""
             ], "x-www-form-urlencoded");
             if(!empty($this->last_response->access_token)){
                 $this->setClientToken($this->last_response);

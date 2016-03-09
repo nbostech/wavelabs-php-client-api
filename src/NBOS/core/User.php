@@ -20,11 +20,11 @@ class User extends ApiBase{
     }
 
     function updateProfileImage($profileData){
-        return $this->apiCall("post", API_HOST_URL . "api/identity/v0/media/", $profileData, "form-data");
+        return $this->apiCall("post", API_HOST_URL . "api/media/v0/media/", $profileData, "form-data");
     }
 
     function getProfileImage($profile_id, $media_type = "original"){
-        $this->last_response = $this->apiCall("get", API_HOST_URL . "api/identity/v0/media/", [
+        $this->last_response = $this->apiCall("get", API_HOST_URL . "api/media/v0/media/", [
             "id" => $profile_id,
             "mediafor" => "profile"
         ]);

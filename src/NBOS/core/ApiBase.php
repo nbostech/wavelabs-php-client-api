@@ -120,7 +120,7 @@ class ApiBase {
                 "client_id" => "my-client",
                 "client_secret" => "my-secret",
                 "grant_type" => "client_credentials",
-                "scope" => ""
+                "scope" => "" //for client token no scope
             ], "x-www-form-urlencoded");
             if(!empty($this->last_response->access_token)){
                 $this->setClientToken($this->last_response);

@@ -15,7 +15,11 @@ class Auth extends ApiBase
     {
         $this->setClientTokenHeader();
         $userData['clientId'] = $this->clientId;
-        return $this->apiCall("post", API_HOST_URL . "api/identity/v0/users/signup", $userData);
+        $this->last_response = $this->apiCall("post", API_HOST_URL . "api/identity/v0/users/signup", $userData);
+        if (!empty($this->last_response->token)) {
+            $this->setToken($this->last_response->token);
+        }
+        return $this->last_response;
     }
 
     function login($username, $password)

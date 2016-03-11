@@ -64,6 +64,17 @@ class Social extends ApiBase{
         return $this->last_response;
     }
 
+    function linkedInConnect($accessToken){
+        if($this->getToken() === null){
+            $this->setClientTokenHeader();
+        }
+        $this->last_response = $this->apiCall('post', API_HOST_URL . "api/identity/v0/auth/social/linkedIn/connect/", [
+            "clientId" => $this->clientId,
+            "accessToken" => $accessToken
+        ]);
+        return $this->last_response;
+    }
+
     function facebookLogin(){
         $this->setClientTokenHeader();
         $this->last_response = $this->apiCall('get', API_HOST_URL . "api/identity/v0/auth/social/facebook/login/");
@@ -95,6 +106,13 @@ class Social extends ApiBase{
     function gitHubLogin(){
         $this->setClientTokenHeader();
         $this->last_response = $this->rest->get(API_HOST_URL . "api/identity/v0/auth/social/gitHub/login/");
+        $this->last_http_code = $this->rest->getLastHttpCode();
+        return $this->last_response;
+    }
+
+    function linkedInLogin(){
+        $this->setClientTokenHeader();
+        $this->last_response = $this->rest->get(API_HOST_URL . "api/identity/v0/auth/social/linkedIn/login/");
         $this->last_http_code = $this->rest->getLastHttpCode();
         return $this->last_response;
     }

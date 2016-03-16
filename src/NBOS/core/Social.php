@@ -9,7 +9,7 @@ class Social extends ApiBase{
         parent::__construct();
     }
 
-    function facebookConnect($accessToken){
+    function facebookConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -17,10 +17,13 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 
-    function googleConnect($accessToken){
+    function googleConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -28,10 +31,13 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 
-    function twitterConnect($accessToken){
+    function twitterConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -39,10 +45,13 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 
-    function instagramConnect($accessToken){
+    function instagramConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -50,10 +59,13 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 
-    function gitHubConnect($accessToken){
+    function gitHubConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -61,10 +73,13 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 
-    function linkedInConnect($accessToken){
+    function linkedInConnect($accessToken, $login = false){
         if($this->getToken() === null){
             $this->setClientTokenHeader();
         }
@@ -72,6 +87,9 @@ class Social extends ApiBase{
             "clientId" => $this->clientId,
             "accessToken" => $accessToken
         ]);
+        if (!empty($this->last_response->token) && empty($this->getToken())) {
+            $this->setToken($this->last_response->token);
+        }
         return $this->last_response;
     }
 

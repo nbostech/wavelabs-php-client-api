@@ -11,6 +11,7 @@ class ApiBase {
     protected $clientSecret = null;
     protected $token = null;
     protected $clientToken = null;
+    protected $moduleToken = null;
     protected $member = null;
     protected $last_response = null;
     protected $last_response_header = null;
@@ -142,6 +143,44 @@ class ApiBase {
         $this->getClientToken();
         if(isset($this->clientToken->access_token)){
             $this->rest->setHttpHeader("Authorization", $this->clientToken->token_type." ".$this->clientToken->access_token);
+        }
+    }
+
+    function setModuleToken($token){
+        $_SESSION['api_module_token'] = $token;
+        $this->moduleToken = $token;
+    }
+
+    function getModuleToken($new = false)
+    {
+        if($this->moduleToken !== null){
+            return $this->moduleToken;
+        }else if(!empty($_SESSION['api_module_token'])){
+            $this->moduleToken = $_SESSION['api_module_token'];
+            return $this->moduleToken;
+        }else {
+            $this->last_response = $this->apiCall("post", API_HOST_URL."oauth/token", [
+                "client_id" => "module-client",
+                "client_secret" => "module-secret",
+                "grant_type" => "client_credentials",
+                "scope" => "scope:oauth.token.verify",
+            ], "x-www-form-urlencoded");
+            if(!empty($this->last_response->access_token)){
+                $this->setModuleToken($this->last_response);
+            }
+        }
+        return $this->moduleToken;
+    }
+
+    function resetModuleToken(){
+        unset($_SESSION['api_module_token']);
+        $this->moduleToken = null;
+    }
+
+    function setModuleTokenHeader(){
+        $this->getModuleToken();
+        if(isset($this->moduleToken->access_token)){
+            $this->rest->setHttpHeader("Authorization", $this->moduleToken->token_type." ".$this->moduleToken->access_token);
         }
     }
 

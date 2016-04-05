@@ -74,4 +74,16 @@ class Auth extends ApiBase
         $_SESSION = [];
         return $response;
     }
+
+    function varifyToken($access_token, $module)
+    {
+        $this->setModuleTokenHeader();
+        //$this->last_response = $this->apiCall("post", API_HOST_URL . "api/identity/v0/users/signup", $postData);
+        $this->setHttpHeader("X-N-ModuleKey", $module);
+        $this->last_response = $this->apiCall("post", API_HOST_URL."api/oauth/v0/tokens/".$access_token);
+        if(!empty($this->last_response->access_token)){
+            //$this->setToken($this->last_response->token);
+        }
+        return $this->last_response;
+    }
 }

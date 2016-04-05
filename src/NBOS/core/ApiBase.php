@@ -66,6 +66,10 @@ class ApiBase {
         return false;
     }
 
+    function setHttpHeader($pKey, $pVal){
+        $this->rest->setHttpHeader($pKey, $pVal);
+    }
+
     function getLastResponse(){
         return $this->last_response;
     }

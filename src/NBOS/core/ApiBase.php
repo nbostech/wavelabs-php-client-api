@@ -203,6 +203,16 @@ class ApiBase {
         return isset($headers[$key]) ? $headers[$key] : NULL;
     }
 
+    public static function getHeaderToken(){
+        $headers = apache_request_headers();
+        if(isset($headers['Authorization'])){
+            $token = $headers['Authorization'];
+            $token = explode(" ", $token);
+            return isset($token[1])?$token[1]:false;
+        }
+        return false;
+    }
+
     public static function setErrors($errors = []){
         foreach($errors as $error){
             if(!empty($error->propertyName)){

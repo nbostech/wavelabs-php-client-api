@@ -195,7 +195,12 @@ class ApiBase {
     }
 
     function getHeaderParams($key = null){
-        $this->rest->header($key);
+        if ($key === NULL)
+        {
+            return apache_request_headers();
+        }
+        $headers = apache_request_headers();
+        return isset($headers[$key]) ? $headers[$key] : NULL;
     }
 
     public static function setErrors($errors = []){

@@ -338,4 +338,14 @@ class Rest
 		$this->http_headers[$key] = $val;
 	}
 
+	public function removeHttpHeader($key){
+		if(isset($this->http_headers[$key])){
+			unset($this->http_headers[$key]);
+		}
+	}
+
+	public function emptyHttpHeader(){
+		$this->http_headers = [];
+	}
+
 }

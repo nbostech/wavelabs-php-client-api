@@ -115,9 +115,9 @@ class ApiBase {
 
     function getClientToken($new = false)
     {
-        if($this->clientToken !== null){
+        if($new === false && $this->clientToken !== null){
             return $this->clientToken;
-        }else if(!empty($_SESSION['api_client_token'])){
+        }else if($new === false && !empty($_SESSION['api_client_token'])){
             $this->clientToken = $_SESSION['api_client_token'];
             return $this->clientToken;
         }else {
@@ -139,8 +139,8 @@ class ApiBase {
         $this->clientToken = null;
     }
 
-    function setClientTokenHeader(){
-        $this->getClientToken();
+    function setClientTokenHeader($new = false){
+        $this->getClientToken($new);
         if(isset($this->clientToken->access_token)){
             $this->rest->setHttpHeader("Authorization", $this->clientToken->token_type." ".$this->clientToken->access_token);
         }
@@ -153,13 +153,15 @@ class ApiBase {
 
     function getModuleToken($new = false)
     {
-        if($this->moduleToken !== null){
+        if($new === false && $this->moduleToken !== null){
             return $this->moduleToken;
-        }else if(!empty($_SESSION['api_module_token'])){
+        }else if($new === false && !empty($_SESSION['api_module_token'])){
             $this->moduleToken = $_SESSION['api_module_token'];
             return $this->moduleToken;
         }else {
-            $this->last_response = $this->apiCall("post", API_HOST_URL."oauth/token", [
+            $obj = new self();
+            $obj->rest->removeHttpHeader("Authorization");
+            $this->last_response = $obj->apiCall("post", API_HOST_URL."oauth/token", [
                 "client_id" => "module-client",
                 "client_secret" => "module-secret",
                 "grant_type" => "client_credentials",
@@ -168,6 +170,7 @@ class ApiBase {
             if(!empty($this->last_response->access_token)){
                 $this->setModuleToken($this->last_response);
             }
+            unset($obj);
         }
         return $this->moduleToken;
     }
@@ -177,8 +180,15 @@ class ApiBase {
         $this->moduleToken = null;
     }
 
-    function setModuleTokenHeader(){
-        $this->getModuleToken();
+    function createTokenObj($access_token, $token_type = 'Bearer'){
+
+    }
+
+    function setModuleTokenHeader($new = false){
+        $this->getModuleToken($new);
+        if(!isset($this->moduleToken->access_token)){
+            $this->getModuleToken(true);
+        }
         if(isset($this->moduleToken->access_token)){
             $this->rest->setHttpHeader("Authorization", $this->moduleToken->token_type." ".$this->moduleToken->access_token);
         }

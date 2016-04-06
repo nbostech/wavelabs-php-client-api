@@ -180,10 +180,6 @@ class ApiBase {
         $this->moduleToken = null;
     }
 
-    function createTokenObj($access_token, $token_type = 'Bearer'){
-
-    }
-
     function setModuleTokenHeader($new = false){
         $this->getModuleToken($new);
         if(!isset($this->moduleToken->access_token)){
@@ -192,6 +188,14 @@ class ApiBase {
         if(isset($this->moduleToken->access_token)){
             $this->rest->setHttpHeader("Authorization", $this->moduleToken->token_type." ".$this->moduleToken->access_token);
         }
+    }
+
+    function createTokenObj($access_token, $token_type = 'Bearer'){
+
+    }
+
+    function getHeaderParams($key = null){
+        $this->rest->header($key);
     }
 
     public static function setErrors($errors = []){

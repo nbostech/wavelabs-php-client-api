@@ -87,4 +87,13 @@ class Auth extends ApiBase
         }
         return $this->last_response;
     }
+
+    function getMemberByUUID($uuid, $accessToken = "", $tokenType = "Bearer")
+    {
+        if(!empty($accessToken)){
+            $this->setHttpHeader("Authorization", $tokenType." ".$accessToken);
+        }
+        $this->last_response = $this->apiCall("get", API_HOST_URL . "api/identity/v0/users/".$uuid);
+        return $this->last_response;
+    }
 }

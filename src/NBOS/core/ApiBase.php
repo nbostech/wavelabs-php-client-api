@@ -26,6 +26,9 @@ class ApiBase {
         defined('API_HOST_URL')   OR define('API_HOST_URL', "http://api.nbos.in/");
         defined('API_CLIENT_ID')  OR define('API_CLIENT_ID', "NBOSConsole-app-client");
         defined('API_CLIENT_SECRET')  OR define('API_CLIENT_SECRET', "NBOSConsole-app-secret");
+        defined('API_MODULE_CLIENT_ID')  OR define('API_MODULE_CLIENT_ID', API_CLIENT_ID);
+        defined('API_MODULE_CLIENT_SECRET')  OR define('API_MODULE_CLIENT_SECRET', API_CLIENT_SECRET);
+
         ApiBase::$fields = $_POST + $_GET;
 
         if(defined('API_CLIENT_ID') && defined('API_CLIENT_SECRET')){
@@ -162,8 +165,8 @@ class ApiBase {
             $obj = new self();
             $obj->rest->removeHttpHeader("Authorization");
             $this->last_response = $obj->apiCall("post", API_HOST_URL."oauth/token", [
-                "client_id" => "module-client",
-                "client_secret" => "module-secret",
+                "client_id" => API_MODULE_CLIENT_ID,
+                "client_secret" => API_MODULE_CLIENT_SECRET,
                 "grant_type" => "client_credentials",
                 "scope" => "scope:oauth.token.verify",
             ], "x-www-form-urlencoded");

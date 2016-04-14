@@ -24,8 +24,8 @@ class ApiBase {
 
     function __construct(){
         defined('API_HOST_URL')   OR define('API_HOST_URL', "http://api.nbos.in/");
-        defined('API_CLIENT_ID')  OR define('API_CLIENT_ID', "my-client");
-        defined('API_CLIENT_SECRET')  OR define('API_CLIENT_SECRET', "my-secret");
+        defined('API_CLIENT_ID')  OR define('API_CLIENT_ID', "NBOSConsole-app-client");
+        defined('API_CLIENT_SECRET')  OR define('API_CLIENT_SECRET', "NBOSConsole-app-secret");
         ApiBase::$fields = $_POST + $_GET;
 
         if(defined('API_CLIENT_ID') && defined('API_CLIENT_SECRET')){
@@ -122,8 +122,8 @@ class ApiBase {
             return $this->clientToken;
         }else {
             $this->last_response = $this->apiCall("post", API_HOST_URL . "oauth/token", [
-                "client_id" => "my-client",
-                "client_secret" => "my-secret",
+                "client_id" => API_CLIENT_ID,
+                "client_secret" => API_CLIENT_SECRET,
                 "grant_type" => "client_credentials",
                 "scope" => "" //for client token no scope
             ], "x-www-form-urlencoded");

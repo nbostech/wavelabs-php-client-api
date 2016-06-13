@@ -38,7 +38,7 @@ class Rest
     private $last_http_code = null;
     private $last_response = null;
 	private $last_response_header = null;
-	protected $http_headers = [];
+	protected $http_headers = array();
 
     const HTTP_OK = 200;
     const HTTP_BAD_REQUEST = 400;
@@ -151,7 +151,7 @@ class Rest
         $this->last_http_code = isset($this->curl->last_info['http_code'])?$this->curl->last_info['http_code']:"";
         $this->last_response = $this->validateResponse($response);
 		$this->last_response_header = !empty($this->curl->last_response_header)?$this->decodeHeaderInfo($this->curl->last_response_header):null;
-		if($this->last_response === null){
+		if($this->last_http_code != 200 && $this->last_response === null){
 			NBOS\core\ApiBase::setError("Server not responding!");
 		}
         return $this->last_response;
@@ -345,7 +345,7 @@ class Rest
 	}
 
 	public function emptyHttpHeader(){
-		$this->http_headers = [];
+		$this->http_headers = array();
 	}
 
 }

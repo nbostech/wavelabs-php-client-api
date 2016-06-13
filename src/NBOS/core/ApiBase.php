@@ -16,8 +16,8 @@ class ApiBase {
     protected $last_response = null;
     protected $last_response_header = null;
     protected $last_http_code = null;
-    public static $errors = [];
-    public static $fields = [];
+    public static $errors = array();
+    public static $fields = array();
     public static $error = null;
     public static $message = null;
 
@@ -61,7 +61,8 @@ class ApiBase {
                     self::setError($this->last_response->message);
                 }
             }
-            if($this->last_response === null){
+            if($this->last_http_code != 200 && $this->last_response === null){
+                echo $this->last_http_code; exit;
                 self::setError("Server not responding!");
             }
             self::__construct();
